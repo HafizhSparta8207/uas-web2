@@ -1,65 +1,151 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Search, TrendingUp, BookMarked, ShieldCheck } from "lucide-react";
+import { prisma } from "@/lib/prisma";
+import { BookCard } from "@/components/BookCard";
 
-export default function Home() {
+export default async function Home() {
+  const featuredBooks = await prisma.book.findMany({
+    take: 4,
+    orderBy: {
+      createdAt: 'desc'
+    },
+    include: {
+      category: true,
+      images: true,
+    }
+  });
+
+  const categories = await prisma.category.findMany({
+    take: 6,
+  });
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div>
+      {/* Hero Section */}
+      <section className="bg-navy text-white relative overflow-hidden">
+        <div className="absolute inset-0 z-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gold via-navy to-navy"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold leading-tight mb-6">
+                Temukan Buku Impianmu di <span className="text-gold">LapakBuku</span>
+              </h1>
+              <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-lg">
+                Marketplace buku baru dan bekas terbesar. Jual beli mudah, aman, dan terpercaya dengan jutaan koleksi.
+              </p>
+              
+              <div className="bg-white p-2 rounded-xl shadow-lg flex items-center max-w-xl">
+                <div className="pl-4 text-gray-400">
+                  <Search className="w-6 h-6" />
+                </div>
+                <input 
+                  type="text" 
+                  placeholder="Cari judul buku, penulis, atau ISBN..." 
+                  className="w-full px-4 py-3 text-navy focus:outline-none"
+                />
+                <button className="bg-brand hover:bg-brand-hover text-white px-6 py-3 rounded-lg font-medium transition-colors whitespace-nowrap">
+                  Cari Buku
+                </button>
+              </div>
+            </div>
+            
+            <div className="hidden lg:block relative">
+              {/* Decorative elements for hero */}
+              <div className="absolute -top-10 -right-10 w-72 h-72 bg-gold/20 rounded-full blur-3xl"></div>
+              <div className="absolute -bottom-10 -left-10 w-72 h-72 bg-brand/20 rounded-full blur-3xl"></div>
+              
+              <div className="grid grid-cols-2 gap-4 relative z-10 transform rotate-[-5deg] hover:rotate-0 transition-transform duration-500">
+                {featuredBooks.slice(0,2).map((book, i) => (
+                  <div key={book.id} className={`transform ${i === 1 ? 'translate-y-8' : ''}`}>
+                    <BookCard book={book} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* Features */}
+      <section className="py-12 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div className="p-6 rounded-2xl bg-background border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-16 h-16 bg-brand/10 text-brand rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <BookMarked className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-serif font-bold text-navy mb-2">Koleksi Terlengkap</h3>
+              <p className="text-gray-500">Jutaan buku dari berbagai kategori, kondisi baru maupun preloved berkualitas.</p>
+            </div>
+            <div className="p-6 rounded-2xl bg-background border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-16 h-16 bg-gold/10 text-gold rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <ShieldCheck className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-serif font-bold text-navy mb-2">Transaksi Aman</h3>
+              <p className="text-gray-500">Sistem pembayaran terjamin dan fitur tracking pengiriman untuk keamanan Anda.</p>
+            </div>
+            <div className="p-6 rounded-2xl bg-background border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-16 h-16 bg-rust/10 text-rust rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <TrendingUp className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-serif font-bold text-navy mb-2">Harga Terbaik</h3>
+              <p className="text-gray-500">Temukan buku idaman dengan harga bersaing langsung dari pembaca dan toko buku.</p>
+            </div>
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* Featured Books */}
+      <section className="py-16 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-end mb-10">
+            <div>
+              <h2 className="text-3xl font-serif font-bold text-navy mb-2">Buku Terbaru</h2>
+              <p className="text-gray-500">Koleksi buku terbaru yang baru saja ditambahkan.</p>
+            </div>
+            <Link href="/books" className="hidden sm:flex text-brand hover:text-brand-hover font-medium items-center gap-1">
+              Lihat Semua &rarr;
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {featuredBooks.map(book => (
+              <BookCard key={book.id} book={book} />
+            ))}
+          </div>
+          
+          <div className="mt-8 sm:hidden text-center">
+            <Link href="/books" className="inline-block bg-white text-navy font-medium px-6 py-2.5 border border-gray-200 rounded-lg shadow-sm">
+              Lihat Semua Buku
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Categories */}
+      <section className="py-16 bg-white border-t border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-serif font-bold text-navy mb-10 text-center">Jelajahi Kategori</h2>
+          
+          <div className="flex flex-wrap justify-center gap-4">
+            {categories.map(category => (
+              <Link 
+                key={category.id} 
+                href={`/books?category=${category.slug}`}
+                className="bg-background hover:bg-brand hover:text-white text-navy px-6 py-3 rounded-full font-medium transition-all shadow-sm border border-gray-200 hover:border-brand"
+              >
+                {category.name}
+              </Link>
+            ))}
+            <Link 
+              href="/books"
+              className="bg-gold hover:bg-gold/90 text-white px-6 py-3 rounded-full font-medium transition-all shadow-sm"
+            >
+              Semua Kategori &rarr;
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
