@@ -3,6 +3,7 @@ import { BookCard } from "@/components/BookCard";
 import Link from "next/link";
 import { CatalogFilters } from "@/components/CatalogFilters";
 import { Search } from "lucide-react";
+import { Suspense } from "react";
 
 export default async function CatalogPage({
   searchParams,
@@ -56,7 +57,9 @@ export default async function CatalogPage({
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
-        <CatalogFilters categories={categories} />
+        <Suspense fallback={<div className="h-16 bg-white animate-pulse rounded-lg shadow-sm border border-gray-100 mb-8"></div>}>
+          <CatalogFilters categories={categories} />
+        </Suspense>
 
         {books.length > 0 ? (
           <>
