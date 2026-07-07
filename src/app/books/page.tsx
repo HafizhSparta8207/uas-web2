@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { BookCard } from "@/components/BookCard";
 import Link from "next/link";
 import { CatalogFilters } from "@/components/CatalogFilters";
+import { Search } from "lucide-react";
 
 export default async function CatalogPage({
   searchParams,
