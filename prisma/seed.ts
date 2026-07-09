@@ -114,8 +114,19 @@ async function main() {
     "Agama": agamaId,
   };
 
-  // Clear existing books to prevent duplicates
+  // 1. Matikan pengecekan relasi kunci asing sementara
+  await prisma.$executeRawUnsafe('SET FOREIGN_KEY_CHECKS = 0;');
+
+  // 2. Lakukan pembersihan data lama
+  await prisma.cartItem.deleteMany();
+  await prisma.cart.deleteMany();
+  await prisma.orderItem.deleteMany();
+  await prisma.order.deleteMany();
+  await prisma.review.deleteMany();
   await prisma.book.deleteMany();
+
+  // 3. Nyalakan kembali pengecekan relasi kunci asing demi keamanan
+  await prisma.$executeRawUnsafe('SET FOREIGN_KEY_CHECKS = 1;');
 
   // 5. Books Data
   const rawBooks = [
