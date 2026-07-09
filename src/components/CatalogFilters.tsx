@@ -14,6 +14,7 @@ export function CatalogFilters({ categories }: CatalogFiltersProps) {
   const q = searchParams.get('q') || "";
   const category = searchParams.get('category') || "";
   const condition = searchParams.get('condition') || "";
+  const origin = searchParams.get('origin') || "";
 
   const updateFilters = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -59,6 +60,19 @@ export function CatalogFilters({ categories }: CatalogFiltersProps) {
             {categories.map(c => (
               <option key={c.id} value={c.slug}>{c.name}</option>
             ))}
+          </select>
+        </div>
+        
+        <div className="relative flex-1 md:w-40">
+          <select 
+            value={origin}
+            onChange={(e) => updateFilters('origin', e.target.value)}
+            className="block w-full py-2.5 px-3 border border-gray-200 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm appearance-none"
+          >
+            <option value="">Semua Negara</option>
+            <option value="Indonesia">Indonesia</option>
+            <option value="Jepang">Jepang</option>
+            <option value="Inggris">Inggris</option>
           </select>
         </div>
         

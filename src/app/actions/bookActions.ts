@@ -21,10 +21,11 @@ export async function createBook(formData: FormData) {
   const price = parseFloat(formData.get("price") as string);
   const stock = parseInt(formData.get("stock") as string);
   const conditionStatus = formData.get("conditionStatus") as "NEW" | "USED";
+  const origin = formData.get("origin") as string;
   const description = formData.get("description") as string;
   const coverImageUrl = formData.get("coverImageUrl") as string;
 
-  if (!title || !author || isNaN(categoryId) || isNaN(price) || isNaN(stock)) {
+  if (!title || !author || isNaN(categoryId) || isNaN(price) || isNaN(stock) || !origin) {
     return { error: "Mohon isi semua field yang diwajibkan dengan format yang benar." };
   }
 
@@ -39,6 +40,7 @@ export async function createBook(formData: FormData) {
         description: description || null,
         price,
         stock,
+        origin,
         conditionStatus,
         coverImageUrl: coverImageUrl || "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=400&auto=format&fit=crop",
       }
@@ -70,10 +72,11 @@ export async function updateBook(bookId: number, formData: FormData) {
   const price = parseFloat(formData.get("price") as string);
   const stock = parseInt(formData.get("stock") as string);
   const conditionStatus = formData.get("conditionStatus") as "NEW" | "USED";
+  const origin = formData.get("origin") as string;
   const description = formData.get("description") as string;
   const coverImageUrl = formData.get("coverImageUrl") as string;
 
-  if (!title || !author || isNaN(categoryId) || isNaN(price) || isNaN(stock)) {
+  if (!title || !author || isNaN(categoryId) || isNaN(price) || isNaN(stock) || !origin) {
     return { error: "Mohon isi semua field yang diwajibkan dengan format yang benar." };
   }
 
@@ -101,6 +104,7 @@ export async function updateBook(bookId: number, formData: FormData) {
         description: description || null,
         price,
         stock,
+        origin,
         conditionStatus,
         ...(coverImageUrl ? { coverImageUrl } : {})
       }

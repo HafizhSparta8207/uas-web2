@@ -8,13 +8,15 @@ import { Suspense } from "react";
 export default async function CatalogPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const q = typeof searchParams.q === 'string' ? searchParams.q : undefined;
-  const category = typeof searchParams.category === 'string' ? searchParams.category : undefined;
-  const condition = typeof searchParams.condition === 'string' ? searchParams.condition : undefined;
+  const sp = await searchParams;
+  const q = typeof sp.q === 'string' ? sp.q : undefined;
+  const category = typeof sp.category === 'string' ? sp.category : undefined;
+  const condition = typeof sp.condition === 'string' ? sp.condition : undefined;
+  const origin = typeof sp.origin === 'string' ? sp.origin : undefined;
   
-  const page = typeof searchParams.page === 'string' ? parseInt(searchParams.page) : 1;
+  const page = typeof sp.page === 'string' ? parseInt(sp.page) : 1;
   const limit = 12;
   const skip = (page - 1) * limit;
 
@@ -31,6 +33,9 @@ export default async function CatalogPage({
   }
   if (condition && (condition === 'NEW' || condition === 'USED')) {
     where.conditionStatus = condition;
+  }
+  if (origin) {
+    where.origin = origin;
   }
 
   const [books, total, categories] = await Promise.all([
@@ -79,7 +84,7 @@ export default async function CatalogPage({
                     return (
                       <Link
                         key={pageNum}
-                        href={`/books?page=${pageNum}${q ? `&q=${q}` : ''}${category ? `&category=${category}` : ''}${condition ? `&condition=${condition}` : ''}`}
+                        href={`/books?page=${pageNum}${q ? `&q=${q}` : ''}${category ? `&category=${category}` : ''}${condition ? `&condition=${condition}` : ''}${origin ? `&origin=${origin}` : ''}`}
                         className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
                           isActive
                             ? 'z-10 bg-brand border-brand text-white'
@@ -99,7 +104,9 @@ export default async function CatalogPage({
             <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
               <Search className="w-10 h-10" />
             </div>
-            <h3 className="text-xl font-bold text-navy mb-2">Tidak ada buku ditemukan</h3>
+            <h3 className="text-xl font-bold text-navy mb-2">
+              {q ? `Judul buku '${q}' tidak ditemukan` : 'Tidak ada buku ditemukan'}
+            </h3>
             <p className="text-gray-500">Coba sesuaikan filter atau kata kunci pencarian Anda.</p>
             <Link href="/books" className="inline-block mt-6 text-brand hover:underline font-medium">
               Hapus Filter

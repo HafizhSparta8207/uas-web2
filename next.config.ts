@@ -11,13 +11,14 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'img.sos-dan.net',
       },
+      {
+        protocol: 'https',
+        hostname: 'image.tmdb.org',
+      },
     ],
   },
   typescript: {
     ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
   },
 };
 

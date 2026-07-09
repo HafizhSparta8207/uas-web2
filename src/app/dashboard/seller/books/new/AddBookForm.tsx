@@ -89,6 +89,19 @@ export function AddBookForm({ categories }: { categories: any[] }) {
               </select>
             </div>
 
+            {/* Asal Negara */}
+            <div className="space-y-2">
+              <label htmlFor="origin" className="block text-sm font-bold text-navy">Asal Negara <span className="text-red-500">*</span></label>
+              <input 
+                type="text" 
+                id="origin" 
+                name="origin" 
+                required 
+                placeholder="Misal: Jepang, Indonesia, Inggris"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/50 focus:border-brand transition-colors"
+              />
+            </div>
+
             {/* Harga */}
             <div className="space-y-2">
               <label htmlFor="price" className="block text-sm font-bold text-navy">Harga (Rp) <span className="text-red-500">*</span></label>

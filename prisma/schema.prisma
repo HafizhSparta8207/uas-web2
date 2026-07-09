@@ -65,6 +65,7 @@ model Book {
   description     String?       @db.Text
   price           Decimal       @db.Decimal(10, 2)
   stock           Int           @default(0)
+  origin          String        @default("Indonesia") @db.VarChar(50)
   conditionStatus Condition     @default(NEW) @map("condition_status")
   coverImageUrl   String?       @map("cover_image_url") @db.VarChar(255)
   createdAt       DateTime      @default(now()) @map("created_at")
