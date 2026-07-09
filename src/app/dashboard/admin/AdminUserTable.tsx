@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ShieldCheck, User as UserIcon, Store, AlertTriangle, Loader2 } from "lucide-react";
+import { ShieldCheck, User as UserIcon, Store, Trash2, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -9,6 +9,11 @@ export function AdminUserTable({ users }: { users: any[] }) {
   const { data: session } = useSession();
   const router = useRouter();
   const [loadingId, setLoadingId] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const totalPages = Math.ceil(users.length / itemsPerPage);
+  const paginatedUsers = users.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const handleRoleChange = async (userId: number, newRole: string) => {
     setLoadingId(userId);
@@ -86,7 +91,7 @@ export function AdminUserTable({ users }: { users: any[] }) {
                   <td colSpan={6} className="px-6 py-8 text-center text-gray-500">Belum ada pengguna terdaftar.</td>
                 </tr>
               ) : (
-                users.map(user => (
+                paginatedUsers.map(user => (
                   <tr key={user.id} className="flex flex-col md:table-row border-b border-gray-200 p-4 mb-3 bg-white rounded-lg shadow-sm md:shadow-none hover:bg-gray-50">
                     <td className="block py-1 md:table-cell md:px-6 md:py-4 text-gray-500">
                       <span className="md:hidden text-xs font-semibold text-gray-400 mr-2">ID:</span>{user.id}
@@ -129,7 +134,7 @@ export function AdminUserTable({ users }: { users: any[] }) {
                             className="text-red-500 hover:text-white hover:bg-red-500 border border-red-500 px-3 md:px-2 py-1.5 rounded transition-colors inline-flex items-center justify-center gap-1 font-medium disabled:opacity-50 flex-1 md:flex-none"
                             title="Hapus Pengguna"
                           >
-                            {loadingId === user.id ? <Loader2 className="w-4 h-4 md:w-3 md:h-3 animate-spin" /> : <AlertTriangle className="w-4 h-4 md:w-3 md:h-3" />}
+                            {loadingId === user.id ? <Loader2 className="w-4 h-4 md:w-3 md:h-3 animate-spin" /> : <Trash2 className="w-4 h-4 md:w-3 md:h-3" />}
                             <span className="md:hidden">Hapus</span>
                           </button>
                         </div>
@@ -145,6 +150,28 @@ export function AdminUserTable({ users }: { users: any[] }) {
             </tbody>
           </table>
         </div>
+
+        {totalPages > 1 && (
+          <div className="flex justify-between items-center mt-6">
+            <button 
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Sebelumnya
+            </button>
+            <span className="text-sm text-gray-500">
+              Halaman {currentPage} dari {totalPages}
+            </span>
+            <button 
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Selanjutnya
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

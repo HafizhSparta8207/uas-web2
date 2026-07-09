@@ -9,6 +9,11 @@ export function AdminCategoryTable({ categories }: { categories: any[] }) {
   const [slug, setSlug] = useState("");
   const [loading, setLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const totalPages = Math.ceil(categories.length / itemsPerPage);
+  const paginatedCategories = categories.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,26 +88,22 @@ export function AdminCategoryTable({ categories }: { categories: any[] }) {
               <tr>
                 <th className="px-6 py-3 font-medium">ID</th>
                 <th className="px-6 py-3 font-medium">Nama Kategori</th>
-                <th className="px-6 py-3 font-medium">Slug</th>
                 <th className="px-6 py-3 font-medium text-right">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 md:divide-y-0">
               {categories.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-gray-500">Belum ada kategori.</td>
+                  <td colSpan={3} className="px-6 py-8 text-center text-gray-500">Belum ada kategori.</td>
                 </tr>
               ) : (
-                categories.map(cat => (
+                paginatedCategories.map(cat => (
                   <tr key={cat.id} className="flex flex-col md:table-row border-b border-gray-200 p-3 mb-2 bg-white rounded-lg shadow-sm md:shadow-none hover:bg-gray-50">
                     <td className="block py-1 md:table-cell md:px-6 md:py-4 text-gray-500">
                       <span className="md:hidden text-xs font-semibold text-gray-400 mr-2">ID:</span>{cat.id}
                     </td>
                     <td className="block py-1 md:table-cell md:px-6 md:py-4 font-medium text-navy">
                       <span className="md:hidden text-xs font-semibold text-gray-400 mr-2">Kategori:</span>{cat.name}
-                    </td>
-                    <td className="block py-1 md:table-cell md:px-6 md:py-4 font-mono text-gray-500 text-xs">
-                      <span className="md:hidden text-xs font-semibold text-gray-400 mr-2">Slug:</span>{cat.slug}
                     </td>
                     <td className="block py-1 md:table-cell md:px-6 md:py-4 text-right mt-2 md:mt-0">
                       <div className="flex justify-end">
@@ -122,6 +123,28 @@ export function AdminCategoryTable({ categories }: { categories: any[] }) {
             </tbody>
           </table>
         </div>
+
+        {totalPages > 1 && (
+          <div className="flex justify-between items-center mt-6">
+            <button 
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Sebelumnya
+            </button>
+            <span className="text-sm text-gray-500">
+              Halaman {currentPage} dari {totalPages}
+            </span>
+            <button 
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Selanjutnya
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
