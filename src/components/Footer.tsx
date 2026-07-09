@@ -5,7 +5,7 @@ export function Footer() {
   return (
     <footer className="bg-white border-t border-gray-200 pt-12 pb-8 mt-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div className="col-span-1 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 text-brand mb-4">
               <BookOpen className="w-8 h-8" />
@@ -33,16 +33,6 @@ export function Footer() {
               <li><Link href="/shipping" className="hover:text-brand transition-colors">Pengiriman</Link></li>
               <li><Link href="/returns" className="hover:text-brand transition-colors">Pengembalian</Link></li>
               <li><Link href="/terms" className="hover:text-brand transition-colors">Syarat & Ketentuan</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-medium text-navy mb-4 font-serif">Kategori Populer</h3>
-            <ul className="space-y-2 text-sm text-gray-500">
-              <li><Link href="/books?category=fiksi" className="hover:text-brand transition-colors">Fiksi</Link></li>
-              <li><Link href="/books?category=non-fiksi" className="hover:text-brand transition-colors">Non Fiksi</Link></li>
-              <li><Link href="/books?category=edukasi" className="hover:text-brand transition-colors">Edukasi & Sekolah</Link></li>
-              <li><Link href="/books?category=pengembangan-diri" className="hover:text-brand transition-colors">Pengembangan Diri</Link></li>
             </ul>
           </div>
         </div>

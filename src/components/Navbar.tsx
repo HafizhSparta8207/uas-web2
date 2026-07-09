@@ -22,6 +22,8 @@ export function Navbar() {
             <div className="hidden md:ml-10 md:flex md:space-x-8">
               <Link href="/" className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors">Beranda</Link>
               <Link href="/books" className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors">Katalog</Link>
+              <Link href="/about" className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors">Tentang</Link>
+              <Link href="/contact" className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors">Hubungi Kami</Link>
             </div>
           </div>
 
@@ -71,6 +73,8 @@ export function Navbar() {
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Link href="/" className="block px-3 py-2 text-base font-medium text-white hover:bg-white/10 rounded-md">Beranda</Link>
             <Link href="/books" className="block px-3 py-2 text-base font-medium text-white hover:bg-white/10 rounded-md">Katalog</Link>
+            <Link href="/about" className="block px-3 py-2 text-base font-medium text-white hover:bg-white/10 rounded-md">Tentang</Link>
+            <Link href="/contact" className="block px-3 py-2 text-base font-medium text-white hover:bg-white/10 rounded-md">Hubungi Kami</Link>
             <Link href="/cart" className="block px-3 py-2 text-base font-medium text-white hover:bg-white/10 rounded-md">Keranjang</Link>
             {session ? (
               <>
