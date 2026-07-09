@@ -18,9 +18,10 @@ LapakBuku adalah platform marketplace modern untuk jual beli buku baru dan bekas
 * **Framework**: Next.js 15 (App Router)
 * **Language**: TypeScript
 * **Styling**: Tailwind CSS v4, Lucide React (Icons), Google Fonts (Fraunces, Work Sans, IBM Plex Mono)
-* **Database**: MySQL 8
+* **Database**: MySQL 8 (Aiven Cloud MySQL untuk lingkungan produksi)
 * **ORM**: Prisma (v6)
 * **Autentikasi**: NextAuth.js (Credentials) dengan bcrypt
+* **Notifikasi**: React Hot Toast
 * **Validasi**: Zod
 
 ## Cara Menjalankan Secara Lokal
