@@ -26,14 +26,7 @@ export function Navbar() {
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
-            <div className="relative text-gray-400 focus-within:text-white">
-              <input 
-                type="text" 
-                placeholder="Cari judul, penulis..." 
-                className="bg-white/10 border-transparent focus:bg-white focus:text-navy rounded-full py-1.5 pl-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-gold transition-all"
-              />
-            </div>
-            
+
             <Link href="/cart" className="text-gray-300 hover:text-white p-2 relative transition-colors">
               <ShoppingCart className="w-5 h-5" />
             </Link>

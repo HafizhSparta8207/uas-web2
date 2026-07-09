@@ -2,6 +2,9 @@ import Link from "next/link";
 import { Search, TrendingUp, BookMarked, ShieldCheck } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { BookCard } from "@/components/BookCard";
+import { HomeSearch } from "@/components/HomeSearch";
+
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const featuredBooks = await prisma.book.findMany({
@@ -34,19 +37,7 @@ export default async function Home() {
                 Marketplace buku baru dan bekas terbesar. Jual beli mudah, aman, dan terpercaya dengan jutaan koleksi.
               </p>
               
-              <div className="bg-white p-2 rounded-xl shadow-lg flex items-center max-w-xl">
-                <div className="pl-4 text-gray-400">
-                  <Search className="w-6 h-6" />
-                </div>
-                <input 
-                  type="text" 
-                  placeholder="Cari judul buku, penulis, atau ISBN..." 
-                  className="w-full px-4 py-3 text-navy focus:outline-none"
-                />
-                <button className="bg-brand hover:bg-brand-hover text-white px-6 py-3 rounded-lg font-medium transition-colors whitespace-nowrap">
-                  Cari Buku
-                </button>
-              </div>
+              <HomeSearch />
             </div>
             
             <div className="hidden lg:block relative">
@@ -54,13 +45,6 @@ export default async function Home() {
               <div className="absolute -top-10 -right-10 w-72 h-72 bg-gold/20 rounded-full blur-3xl"></div>
               <div className="absolute -bottom-10 -left-10 w-72 h-72 bg-brand/20 rounded-full blur-3xl"></div>
               
-              <div className="grid grid-cols-2 gap-4 relative z-10 transform rotate-[-5deg] hover:rotate-0 transition-transform duration-500">
-                {featuredBooks.slice(0,2).map((book, i) => (
-                  <div key={book.id} className={`transform ${i === 1 ? 'translate-y-8' : ''}`}>
-                    <BookCard book={book} />
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </div>
@@ -122,30 +106,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="py-16 bg-white border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-serif font-bold text-navy mb-10 text-center">Jelajahi Kategori</h2>
-          
-          <div className="flex flex-wrap justify-center gap-4">
-            {categories.map(category => (
-              <Link 
-                key={category.id} 
-                href={`/books?category=${category.slug}`}
-                className="bg-background hover:bg-brand hover:text-white text-navy px-6 py-3 rounded-full font-medium transition-all shadow-sm border border-gray-200 hover:border-brand"
-              >
-                {category.name}
-              </Link>
-            ))}
-            <Link 
-              href="/books"
-              className="bg-gold hover:bg-gold/90 text-white px-6 py-3 rounded-full font-medium transition-all shadow-sm"
-            >
-              Semua Kategori &rarr;
-            </Link>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
