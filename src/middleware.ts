@@ -16,7 +16,7 @@ export async function middleware(req: NextRequest) {
   }
 
   // Role-based protection for /dashboard
-  if (pathname.startsWith('/dashboard/seller') && token?.role !== 'SELLER') {
+  if (pathname.startsWith('/dashboard/seller') && token?.role !== 'SELLER' && token?.role !== 'ADMIN') {
     return NextResponse.redirect(new URL('/', req.url));
   }
 

@@ -7,7 +7,7 @@ import { AddBookForm } from "./AddBookForm";
 export default async function NewBookPage() {
   const session = await getServerSession(authOptions);
   
-  if (!session || session.user.role !== 'SELLER') {
+  if (!session || (session.user.role !== 'SELLER' && session.user.role !== 'ADMIN')) {
     redirect("/");
   }
 

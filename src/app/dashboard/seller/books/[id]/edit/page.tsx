@@ -7,7 +7,7 @@ import { EditBookForm } from "./EditBookForm";
 export default async function EditBookPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   
-  if (!session || session.user.role !== 'SELLER') {
+  if (!session || (session.user.role !== 'SELLER' && session.user.role !== 'ADMIN')) {
     redirect("/");
   }
 
@@ -26,7 +26,7 @@ export default async function EditBookPage({ params }: { params: Promise<{ id: s
   ]);
 
   // If book doesn't exist, or doesn't belong to the logged in seller, redirect
-  if (!book || book.sellerId !== userId) {
+  if (!book || (book.sellerId !== userId && session.user.role !== 'ADMIN')) {
     redirect("/dashboard/seller");
   }
 

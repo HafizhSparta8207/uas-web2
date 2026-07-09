@@ -67,7 +67,7 @@ model Book {
   stock           Int           @default(0)
   origin          String        @default("Indonesia") @db.VarChar(50)
   conditionStatus Condition     @default(NEW) @map("condition_status")
-  coverImageUrl   String?       @map("cover_image_url") @db.VarChar(255)
+  coverImageUrl   String?       @map("cover_image_url") @db.LongText
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
   seller          User          @relation(fields: [sellerId], references: [id])

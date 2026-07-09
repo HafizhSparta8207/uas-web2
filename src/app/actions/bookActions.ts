@@ -8,8 +8,8 @@ import { revalidatePath } from "next/cache";
 export async function createBook(formData: FormData) {
   const session = await getServerSession(authOptions);
   
-  if (!session || session.user.role !== 'SELLER') {
-    return { error: "Unauthorized. Hanya penjual yang dapat menambahkan buku." };
+  if (!session || (session.user.role !== 'SELLER' && session.user.role !== 'ADMIN')) {
+    return { error: "Unauthorized. Hanya penjual atau admin yang dapat menambahkan buku." };
   }
 
   const userId = parseInt(session.user.id);
@@ -59,8 +59,8 @@ export async function createBook(formData: FormData) {
 export async function updateBook(bookId: number, formData: FormData) {
   const session = await getServerSession(authOptions);
   
-  if (!session || session.user.role !== 'SELLER') {
-    return { error: "Unauthorized. Hanya penjual yang dapat mengedit buku." };
+  if (!session || (session.user.role !== 'SELLER' && session.user.role !== 'ADMIN')) {
+    return { error: "Unauthorized. Hanya penjual atau admin yang dapat mengedit buku." };
   }
 
   const userId = parseInt(session.user.id);
@@ -90,7 +90,7 @@ export async function updateBook(bookId: number, formData: FormData) {
       return { error: "Buku tidak ditemukan." };
     }
 
-    if (existingBook.sellerId !== userId) {
+    if (existingBook.sellerId !== userId && session.user.role !== 'ADMIN') {
       return { error: "Unauthorized. Anda tidak memiliki akses untuk mengubah buku ini." };
     }
 
