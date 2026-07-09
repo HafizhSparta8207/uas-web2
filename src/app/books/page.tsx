@@ -8,15 +8,15 @@ import { Suspense } from "react";
 export default async function CatalogPage({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: Promise<{ q?: string; category?: string; condition?: string; origin?: string; page?: string }>;
 }) {
-  const sp = await searchParams;
-  const q = typeof sp.q === 'string' ? sp.q : undefined;
-  const category = typeof sp.category === 'string' ? sp.category : undefined;
-  const condition = typeof sp.condition === 'string' ? sp.condition : undefined;
-  const origin = typeof sp.origin === 'string' ? sp.origin : undefined;
+  const resolvedSearchParams = await searchParams;
+  const q = resolvedSearchParams.q;
+  const category = resolvedSearchParams.category;
+  const condition = resolvedSearchParams.condition;
+  const origin = resolvedSearchParams.origin;
   
-  const page = typeof sp.page === 'string' ? parseInt(sp.page) : 1;
+  const page = resolvedSearchParams.page ? parseInt(resolvedSearchParams.page) : 1;
   const limit = 12;
   const skip = (page - 1) * limit;
 
