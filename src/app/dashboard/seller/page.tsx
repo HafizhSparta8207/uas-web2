@@ -13,11 +13,17 @@ export default async function SellerDashboardPage() {
 
   const userId = parseInt(session.user.id);
 
-  const [booksCount, ordersCount, seller] = await Promise.all([
+  const [booksCount, ordersCount, seller, totalEarningsResult] = await Promise.all([
     prisma.book.count({ where: { sellerId: userId } }),
     prisma.order.count({ where: { items: { some: { sellerId: userId } } } }),
-    prisma.sellerProfile.findUnique({ where: { userId } })
+    prisma.sellerProfile.findUnique({ where: { userId } }),
+    prisma.orderItem.aggregate({
+      where: { sellerId: userId },
+      _sum: { price: true }
+    })
   ]);
+
+  const totalEarnings = Number(totalEarningsResult._sum.price || 0);
 
   const [recentOrders, sellerBooks] = await Promise.all([
     prisma.order.findMany({
@@ -84,8 +90,10 @@ export default async function SellerDashboardPage() {
               <DollarSign className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm text-gray-500 font-medium">Saldo (Simulasi)</p>
-              <h3 className="text-2xl font-bold text-navy">Rp 0</h3>
+              <p className="text-sm text-gray-500 font-medium">Saldo (Pendapatan)</p>
+              <h3 className="text-2xl font-bold text-navy">
+                Rp {totalEarnings ? totalEarnings.toLocaleString('id-ID') : "0"}
+              </h3>
             </div>
           </div>
         </div>

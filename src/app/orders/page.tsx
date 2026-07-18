@@ -33,7 +33,7 @@ export default async function OrdersPage() {
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
             <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h2 className="text-xl font-bold text-navy mb-2">Belum ada pesanan</h2>
-            <p className="text-gray-500 mb-6">Anda belum pernah melakukan pemesanan buku.</p>
+            <p className="text-gray-500 mb-6">Anda belum memiliki riwayat transaksi. Silakan menjelajahi Katalog Buku untuk mulai berbelanja.</p>
             <Link href="/books" className="bg-brand hover:bg-brand-hover text-white px-6 py-2.5 rounded-lg font-medium transition-colors">
               Mulai Belanja
             </Link>
@@ -61,13 +61,14 @@ export default async function OrdersPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-400 text-xs">Status:</span>
-                    <span className={`px-3 py-1 text-xs font-bold rounded-full ${
-                      order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' :
-                      order.status === 'SHIPPED' ? 'bg-blue-100 text-blue-700' :
-                      order.status === 'DELIVERED' ? 'bg-green-100 text-green-700' :
-                      'bg-gray-100 text-gray-700'
+                    <span className={`px-3 py-1 text-xs font-bold rounded-full border ${
+                      order.status === 'PENDING' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                      order.status === 'SHIPPED' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                      (order.status === 'DELIVERED' || order.status === 'COMPLETED') ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                      order.status === 'CANCELLED' ? 'bg-rose-50 text-rose-700 border-rose-200' :
+                      'bg-gray-100 text-gray-700 border-gray-200'
                     }`}>
-                      {order.status}
+                      {order.status === 'PENDING' ? 'Diproses' : order.status === 'DELIVERED' || order.status === 'COMPLETED' ? 'Selesai' : order.status === 'CANCELLED' ? 'Dibatalkan' : order.status}
                     </span>
                   </div>
                 </div>
