@@ -7,7 +7,7 @@ import Link from "next/link";
 
 type OrderStatus = "PENDING" | "PAID" | "SHIPPED" | "COMPLETED" | "CANCELLED";
 
-export function SellerOrderTable({ orders }: { orders: any[] }) {
+export function SellerOrderTable({ orders, isPreview }: { orders: any[], isPreview?: boolean }) {
   const [updatingId, setUpdatingId] = useState<number | null>(null);
 
   const handleStatusChange = async (orderId: number, newStatus: OrderStatus) => {
@@ -33,10 +33,12 @@ export function SellerOrderTable({ orders }: { orders: any[] }) {
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-      <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-        <h2 className="font-bold text-navy text-lg">Pesanan Terbaru</h2>
-        <Link href="/dashboard/seller/orders" className="text-brand hover:underline text-sm font-medium">Lihat Semua</Link>
-      </div>
+      {!isPreview && (
+        <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+          <h2 className="font-bold text-navy text-lg">Pesanan Terbaru</h2>
+          <Link href="/dashboard/seller/orders" className="text-brand hover:underline text-sm font-medium">Lihat Semua</Link>
+        </div>
+      )}
       
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
