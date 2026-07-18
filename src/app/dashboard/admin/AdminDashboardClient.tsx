@@ -63,7 +63,7 @@ export function AdminDashboardClient({ categories, users, books, stats, userName
                 setIsSidebarOpen(false);
               }}
               className={`
-                w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors
+                w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors duration-200 ease-in-out
                 ${currentView === item.id 
                   ? "bg-brand text-white shadow-sm" 
                   : "text-gray-600 hover:bg-gray-50 hover:text-navy"
@@ -128,7 +128,7 @@ export function AdminDashboardClient({ categories, users, books, stats, userName
           </div>
 
           {/* Active View */}
-          <div className="space-y-8">
+          <div key={currentView} className="space-y-8 animate-fade-in">
             {currentView === "books" && <AdminBookTable books={books} />}
             {currentView === "users" && <AdminUserTable users={users} />}
             {currentView === "categories" && <AdminCategoryTable categories={categories} />}

@@ -92,7 +92,7 @@ export function AdminUserTable({ users }: { users: any[] }) {
                 </tr>
               ) : (
                 paginatedUsers.map(user => (
-                  <tr key={user.id} className="flex flex-col md:table-row border-b border-gray-200 p-4 mb-3 bg-white rounded-lg shadow-sm md:shadow-none hover:bg-gray-50">
+                  <tr key={user.id} className="flex flex-col md:table-row border-b border-gray-200 p-4 mb-3 bg-white rounded-lg shadow-sm md:shadow-none hover:bg-gray-50 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md hover:border-gray-300">
                     <td className="block py-1 md:table-cell md:px-6 md:py-4 text-gray-500">
                       <span className="md:hidden text-xs font-semibold text-gray-400 mr-2">ID:</span>{user.id}
                     </td>
@@ -131,7 +131,7 @@ export function AdminUserTable({ users }: { users: any[] }) {
                           <button 
                             onClick={() => handleDelete(user.id)}
                             disabled={loadingId === user.id}
-                            className="text-red-500 hover:text-white hover:bg-red-500 border border-red-500 px-3 md:px-2 py-1.5 rounded transition-colors inline-flex items-center justify-center gap-1 font-medium disabled:opacity-50 flex-1 md:flex-none"
+                            className="text-red-500 hover:text-white hover:bg-red-500 border border-red-500 px-3 md:px-2 py-1.5 rounded transition-all duration-150 active:scale-95 hover:brightness-95 inline-flex items-center justify-center gap-1 font-medium disabled:opacity-50 flex-1 md:flex-none"
                             title="Hapus Pengguna"
                           >
                             {loadingId === user.id ? <Loader2 className="w-4 h-4 md:w-3 md:h-3 animate-spin" /> : <Trash2 className="w-4 h-4 md:w-3 md:h-3" />}

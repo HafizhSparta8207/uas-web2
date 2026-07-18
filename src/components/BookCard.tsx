@@ -17,7 +17,7 @@ export function BookCard({ book }: BookCardProps) {
     : book.coverImageUrl || "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=400&auto=format&fit=crop";
 
   return (
-    <div className="group relative flex flex-col bg-white rounded-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-xl shadow-md overflow-hidden">
+    <div className="group relative flex flex-col bg-white rounded-xl border border-transparent transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md hover:border-gray-300 overflow-hidden shadow-sm">
       {/* Book Spine Effect - shadow on left side */}
       <div className="absolute left-0 top-0 bottom-0 w-3 bg-gradient-to-r from-black/20 to-transparent z-10 pointer-events-none mix-blend-multiply rounded-l-xl"></div>
       <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-white/40 z-20 pointer-events-none"></div>

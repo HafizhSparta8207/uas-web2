@@ -76,7 +76,7 @@ export function AdminCategoryTable({ categories }: { categories: any[] }) {
           <button 
             type="submit" 
             disabled={loading || !name}
-            className="bg-brand hover:bg-brand-hover text-white px-6 py-2 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 disabled:opacity-50 min-w-[120px]"
+            className="bg-brand hover:bg-brand-hover text-white px-6 py-2 rounded-lg font-medium transition-all duration-150 active:scale-95 hover:brightness-95 flex items-center justify-center gap-2 disabled:opacity-50 min-w-[120px]"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Plus className="w-4 h-4" /> Tambah</>}
           </button>
@@ -98,7 +98,7 @@ export function AdminCategoryTable({ categories }: { categories: any[] }) {
                 </tr>
               ) : (
                 paginatedCategories.map(cat => (
-                  <tr key={cat.id} className="flex flex-col md:table-row border-b border-gray-200 p-3 mb-2 bg-white rounded-lg shadow-sm md:shadow-none hover:bg-gray-50">
+                  <tr key={cat.id} className="flex flex-col md:table-row border-b border-gray-200 p-3 mb-2 bg-white rounded-lg shadow-sm md:shadow-none hover:bg-gray-50 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md hover:border-gray-300">
                     <td className="block py-1 md:table-cell md:px-6 md:py-4 text-gray-500">
                       <span className="md:hidden text-xs font-semibold text-gray-400 mr-2">ID:</span>{cat.id}
                     </td>
@@ -110,7 +110,7 @@ export function AdminCategoryTable({ categories }: { categories: any[] }) {
                         <button 
                           onClick={() => handleDelete(cat.id)}
                           disabled={deletingId === cat.id}
-                          className="text-red-500 hover:text-red-700 hover:bg-red-50 border md:border-0 border-red-200 md:border-transparent px-3 md:px-3 py-1.5 rounded-md transition-colors inline-flex items-center justify-center gap-1.5 disabled:opacity-50 w-full md:w-auto"
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50 border md:border-0 border-red-200 md:border-transparent px-3 md:px-3 py-1.5 rounded-md transition-all duration-150 active:scale-95 hover:brightness-95 inline-flex items-center justify-center gap-1.5 disabled:opacity-50 w-full md:w-auto"
                         >
                           {deletingId === cat.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                           <span className="md:hidden font-medium text-sm">Hapus</span>

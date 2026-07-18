@@ -53,7 +53,7 @@ export function AdminBookTable({ books }: { books: any[] }) {
           </div>
           <Link 
             href="/dashboard/seller/books/new"
-            className="bg-brand hover:bg-brand-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors shadow-sm w-full md:w-auto text-center whitespace-nowrap"
+            className="bg-brand hover:bg-brand-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition-all duration-150 active:scale-95 hover:brightness-95 shadow-sm w-full md:w-auto text-center whitespace-nowrap"
           >
             + Tambah Buku Baru
           </Link>
@@ -81,7 +81,7 @@ export function AdminBookTable({ books }: { books: any[] }) {
                 </tr>
               ) : (
                 paginatedBooks.map(book => (
-                  <tr key={book.id} className="flex flex-col md:table-row border-b border-gray-200 p-4 mb-3 bg-white rounded-lg shadow-sm md:shadow-none hover:bg-gray-50">
+                  <tr key={book.id} className="flex flex-col md:table-row border-b border-gray-200 p-4 mb-3 bg-white rounded-lg shadow-sm md:shadow-none hover:bg-gray-50 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md hover:border-gray-300">
                     <td className="block py-1 md:table-cell md:px-6 md:py-4">
                       <Link href={`/books/${book.id}`} className="font-bold text-navy hover:text-brand line-clamp-2" target="_blank">
                         {book.title}
@@ -104,14 +104,14 @@ export function AdminBookTable({ books }: { books: any[] }) {
                     <td className="flex gap-2 mt-3 justify-end md:justify-end md:mt-0 md:table-cell md:px-6 md:py-4 md:text-right">
                       <Link
                         href={`/dashboard/seller/books/${book.id}/edit`}
-                        className="text-brand hover:text-white hover:bg-brand border border-brand px-3 py-1.5 rounded-md transition-colors inline-flex items-center justify-center gap-1.5 font-medium w-full md:w-auto md:mr-2"
+                        className="text-brand hover:text-white hover:bg-brand border border-brand px-3 py-1.5 rounded-md transition-all duration-150 active:scale-95 hover:brightness-95 inline-flex items-center justify-center gap-1.5 font-medium w-full md:w-auto md:mr-2"
                       >
                         Edit
                       </Link>
                       <button 
                         onClick={() => handleDelete(book.id)}
                         disabled={deletingId === book.id}
-                        className="text-red-500 hover:text-white hover:bg-red-500 border border-red-500 px-3 py-1.5 rounded-md transition-colors inline-flex items-center justify-center gap-1.5 font-medium disabled:opacity-50 w-full md:w-auto"
+                        className="text-red-500 hover:text-white hover:bg-red-500 border border-red-500 px-3 py-1.5 rounded-md transition-all duration-150 active:scale-95 hover:brightness-95 inline-flex items-center justify-center gap-1.5 font-medium disabled:opacity-50 w-full md:w-auto"
                         title="Hapus Buku"
                       >
                         {deletingId === book.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Trash2 className="w-4 h-4" /> Hapus</>}
