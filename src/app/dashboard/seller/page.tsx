@@ -1,10 +1,11 @@
-import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { authOptions } from "@/lib/auth"; 
 import { redirect } from "next/navigation";
+import { prisma } from "@/lib/prisma"; 
 import { SellerDashboardClient } from "./SellerDashboardClient";
-import Link from "next/link";
-import { AlertTriangle, RefreshCw } from "lucide-react";
+
+// PENTING: Menghancurkan cache statis Vercel
+export const dynamic = "force-dynamic";
 
 export default async function SellerDashboardPage() {
   const session = await getServerSession(authOptions);
@@ -13,104 +14,101 @@ export default async function SellerDashboardPage() {
     redirect("/login");
   }
 
-  try {
-    // Jalur Utama: Ambil ID dari sesi
-    let userId = parseInt((session.user as any).id);
-
-    // Jalur Penyelamat: Jika NextAuth di Vercel tidak membawa ID, cari manual lewat email!
-    if (isNaN(userId) && session.user.email) {
+  // 1. Ambil & Validasi ID Penjual secara aman
+  let sellerId = parseInt((session.user as any).id);
+  if (isNaN(sellerId) && session.user.email) {
+    try {
       const dbUser = await prisma.user.findUnique({
         where: { email: session.user.email },
         select: { id: true }
       });
       if (dbUser) {
-        userId = dbUser.id;
+        sellerId = dbUser.id;
       }
+    } catch (e) {
+      console.error("Gagal mengambil ID dari email:", e);
     }
+  }
 
-    // Jika setelah dicari manual tetap tidak ada, lempar ke catch block
-    if (!userId || isNaN(userId)) {
-      throw new Error("Identitas penjual (Seller ID) tidak ditemukan.");
-    }
-    const [booksCount, ordersCount, seller, totalEarningsResult] = await Promise.all([
-      prisma.book.count({ where: { sellerId: userId } }),
-      prisma.order.count({ where: { items: { some: { sellerId: userId } } } }),
-      prisma.sellerProfile.findUnique({ where: { userId } }),
-      prisma.orderItem.aggregate({
-        where: { sellerId: userId },
-        _sum: { price: true }
-      })
-    ]);
+  if (!sellerId || isNaN(sellerId)) {
+    redirect("/login");
+  }
 
-    const totalEarnings = Number(totalEarningsResult?._sum?.price || 0);
+  // 2. Ambil Profil Seller
+  let sellerProfile = null;
+  try {
+    sellerProfile = await prisma.sellerProfile.findUnique({ where: { userId: sellerId } });
+  } catch (e) {
+    console.error("Gagal mengambil profil seller:", e);
+  }
 
-    const [recentOrders, sellerBooks] = await Promise.all([
-      prisma.order.findMany({
-        where: { items: { some: { sellerId: userId } } },
-        orderBy: { createdAt: 'desc' },
-        include: {
-          buyer: true,
-          items: { include: { book: true } }
-        }
-      }),
-      prisma.book.findMany({
-        where: { sellerId: userId },
-        orderBy: { createdAt: 'desc' },
-        include: { category: true }
-      })
-    ]);
-
-    const serializedOrders = recentOrders.map(order => ({
-      ...order,
-      totalAmount: Number(order.totalAmount)
-    }));
-
-    const serializedBooks = sellerBooks.map(book => ({
+  // 3. Ambil data buku dengan isolasi mandiri
+  let books: any[] = [];
+  try {
+    const rawBooks = await prisma.book.findMany({
+      where: { sellerId: sellerId },
+      orderBy: { createdAt: "desc" },
+      include: { category: true }
+    }) || [];
+    
+    books = rawBooks.map(book => ({
       ...book,
       price: Number(book.price)
     }));
-
-    return (
-      <SellerDashboardClient 
-        stats={{ booksCount, ordersCount, totalEarnings }}
-        sellerName={seller?.storeName || session.user.name || "Penjual"}
-        orders={serializedOrders}
-        books={serializedBooks}
-      />
-    );
   } catch (error) {
-    console.error("Catastrophic Seller Dashboard Error:", error);
-    
-    // Tampilan darurat anti-crash jika database/server bermasalah
-    return (
-      <div className="flex min-h-[calc(100vh-64px)] bg-gray-50/50">
-        <div className="w-64 border-r bg-white p-6 hidden md:block">
-          <h2 className="font-bold text-lg mb-4 text-navy">Dashboard Penjual</h2>
-          <div className="text-sm text-gray-400">Pemuatan dinonaktifkan sementara</div>
-        </div>
-        <div className="flex-1 p-8 flex flex-col items-center justify-center text-center">
-          <div className="max-w-md bg-white p-8 rounded-xl shadow-sm border border-gray-200">
-            <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
-              <AlertTriangle className="w-8 h-8" />
-            </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2">Sinkronisasi Dasbor Toko</h3>
-            <p className="text-sm text-gray-600 mb-6">
-              Akun penjual Anda berhasil divalidasi, namun sistem sedang menyiapkan alokasi database baru di server produksi. Harap tunggu beberapa saat.
-            </p>
-            <div className="flex justify-center gap-3">
-              <Link href="/" className="px-4 py-2 bg-gray-100 text-gray-700 text-sm rounded-lg hover:bg-gray-200 transition-colors font-medium">
-                Ke Beranda
-              </Link>
-              {/* @ts-ignore */}
-              <form action={async () => { "use server"; }}>
-                <button type="submit" formAction={async () => { "use server"; redirect("/dashboard/seller"); }} className="px-4 py-2 bg-brand text-white text-sm rounded-lg hover:bg-brand-hover transition-colors font-medium flex items-center gap-2">
-                  <RefreshCw className="w-4 h-4" /> Segarkan Halaman
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    console.error("Query buku gagal, fallback ke array kosong:", error);
   }
+
+  // 4. Ambil data pesanan dengan isolasi mandiri
+  let ordersCount = 0;
+  let recentOrders: any[] = [];
+  try {
+    ordersCount = await prisma.order.count({ where: { items: { some: { sellerId: sellerId } } } });
+    
+    const rawOrders = await prisma.order.findMany({
+      where: { items: { some: { sellerId: sellerId } } },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        buyer: true,
+        items: { include: { book: true } }
+      }
+    }) || [];
+
+    recentOrders = rawOrders.map(order => ({
+      ...order,
+      totalAmount: Number(order.totalAmount)
+    }));
+  } catch (error) {
+    console.error("Query pesanan gagal, fallback:", error);
+  }
+
+  // 5. Ambil data pendapatan dengan isolasi mandiri (kebal error relasi)
+  let totalEarnings = 0;
+  try {
+    const totalSalesRaw = await prisma.orderItem.aggregate({
+      where: { sellerId: sellerId },
+      _sum: { price: true }
+    });
+    totalEarnings = Number(totalSalesRaw?._sum?.price || 0);
+  } catch (error) {
+    console.error("Query agregasi pendapatan gagal, fallback ke 0:", error);
+  }
+
+  const stats = {
+    booksCount: books.length,
+    ordersCount: ordersCount,
+    totalEarnings: totalEarnings
+  };
+
+  const sellerName = sellerProfile?.storeName || session.user.name || "Penjual";
+
+  // Langsung kembalikan client UI, dijamin bypass dari catch-block utama halaman
+  return (
+    <SellerDashboardClient 
+      stats={stats} 
+      sellerName={sellerName}
+      orders={recentOrders} 
+      books={books}
+    />
+  );
 }
