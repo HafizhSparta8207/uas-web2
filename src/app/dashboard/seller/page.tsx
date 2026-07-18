@@ -14,8 +14,24 @@ export default async function SellerDashboardPage() {
   }
 
   try {
-    const userId = parseInt(session.user.id);
+    // Jalur Utama: Ambil ID dari sesi
+    let userId = parseInt((session.user as any).id);
 
+    // Jalur Penyelamat: Jika NextAuth di Vercel tidak membawa ID, cari manual lewat email!
+    if (isNaN(userId) && session.user.email) {
+      const dbUser = await prisma.user.findUnique({
+        where: { email: session.user.email },
+        select: { id: true }
+      });
+      if (dbUser) {
+        userId = dbUser.id;
+      }
+    }
+
+    // Jika setelah dicari manual tetap tidak ada, lempar ke catch block
+    if (!userId || isNaN(userId)) {
+      throw new Error("Identitas penjual (Seller ID) tidak ditemukan.");
+    }
     const [booksCount, ordersCount, seller, totalEarningsResult] = await Promise.all([
       prisma.book.count({ where: { sellerId: userId } }),
       prisma.order.count({ where: { items: { some: { sellerId: userId } } } }),
